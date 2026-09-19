@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MARKOPAŞA — Danışmanlık & Çözüm Merkezi</title>
+<meta name="description" content="Doğru Uzman, Doğru Çözüm. MarkoPaşa Danışmanlık & Çözüm Merkezi." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#0a1628; --navy2:#132347; --navy3:#1a2d4d;
+  --gold:#d4a843; --gold2:#e8c96a; --gold3:#b8922f;
+  --bg:#f5f7fb; --text:#0f172a; --muted:#64748b;
+  --border:#e2e8f0; --green:#10b981; --red:#ef4444;
+  --amber:#f59e0b; --blue:#3b82f6; --purple:#8b5cf6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+
+/* ========== APP LAYOUT ========== */
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:266px;background:linear-gradient(180deg,var(--navy) 0%,#060f1f 100%);
+  color:#fff;position:fixed;top:0;left:0;bottom:0;z-index:80;
+  display:flex;flex-direction:column;transition:transform .3s ease;
+  box-shadow:4px 0 26px rgba(0,0,0,.18);overflow-y:auto
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+.brand{padding:18px 16px;display:flex;gap:12px;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand-logo{
+  width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold3));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:var(--navy);font-size:17px;letter-spacing:-.5px
+}
+.brand h1{font-size:15px;font-weight:800;line-height:1.1;letter-spacing:-.3px}
+.brand small{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.nav-group{padding:14px 16px 4px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.35);font-weight:700}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;color:rgba(255,255,255,.7);
+  font-size:13px;font-weight:500;border-left:3px solid transparent;transition:.2s;width:100%;text-align:left
+}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff;border-left-color:var(--gold)}
+.nav-item.active{background:rgba(212,168,67,.12);color:var(--gold2);border-left-color:var(--gold)}
+.nav-item i{width:20px;text-align:center;font-style:normal;font-size:15px}
+.side-user{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:10px;align-items:center}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--navy));display:flex;align-items:center;justify-content:center;color:var(--gold2);font-weight:700;font-size:13px;border:2px solid var(--gold);flex-shrink:0}
+
+/* ========== MAIN ========== */
+.main{flex:1;margin-left:266px;padding:22px 26px 0;min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.topbar h2{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+.crumb{font-size:12px;color:var(--muted);margin-top:3px}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.pill-gold{background:#fdf6e3;color:#8a6a1a}
+.pill-green{background:#ecfdf5;color:#047857}
+.pill-red{background:#fef2f2;color:#b91c1c}
+.pill-blue{background:#eff6ff;color:#1d4ed8}
+.pill-purple{background:#f5f3ff;color:#6d28d9}
+.pill-slate{background:#f1f5f9;color:#334155}
+.pill-amber{background:#fffbeb;color:#b45309}
+
+/* ========== CARDS ========== */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(15,23,42,.04);transition:.2s}
+.card:hover{box-shadow:0 4px 22px rgba(15,23,42,.08)}
+.card-title{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.card-value{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.5px;line-height:1.15}
+.kpi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:10px}
+.kpi-navy{background:#eff6ff;color:var(--navy)}
+.kpi-gold{background:#fdf6e3;color:var(--gold3)}
+.kpi-green{background:#ecfdf5;color:#047857}
+.kpi-red{background:#fef2f2;color:#b91c1c}
+.kpi-purple{background:#f5f3ff;color:#6d28d9}
+.trend{font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;margin-top:8px}
+.up{background:#ecfdf5;color:#047857}
+.down{background:#fef2f2;color:#b91c1c}
+
+/* ========== SCORE RING ========== */
+.ring-wrap{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.ring{position:relative;width:170px;height:170px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .bg{fill:none;stroke:#e2e8f0;stroke-width:12}
+.ring .fg{fill:none;stroke:url(#goldGrad);stroke-width:12;stroke-linecap:round;stroke-dasharray:471;stroke-dashoffset:471;transition:stroke-dashoffset 1.4s ease}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .mid b{font-size:40px;font-weight:900;color:var(--navy);letter-spacing:-1.5px;line-height:1}
+.ring .mid span{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-top:4px}
+
+/* ========== TABLE ========== */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid #f1f5f9;color:#0f172a}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+th.num{text-align:right}
+
+/* ========== BUTTONS ========== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;transition:.2s;letter-spacing:.2px}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy2)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold3));color:var(--navy)}
+.btn-gold:hover{filter:brightness(1.06)}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn-outline:hover{background:var(--navy);color:#fff}
+.btn-ghost{background:#f1f5f9;color:var(--navy)}
+.btn-ghost:hover{background:#e2e8f0}
+.btn-danger{background:#fef2f2;color:#b91c1c}
+.btn-danger:hover{background:#fee2e2}
+.btn-wa{background:#25D366;color:#fff}
+.btn-wa:hover{background:#1eb356}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+/* ========== FORMS ========== */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:5px;letter-spacing:.2px}
+.field input,.field select,.field textarea{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;
+  font-size:13.5px;background:#fafbfc;outline:none;transition:.2s;font-family:inherit
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(212,168,67,.12)}
+.field .hint{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* ========== MODAL ========== */
+.modal-bg{position:fixed;inset:0;background:rgba(10,22,40,.75);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:460px;width:100%;padding:30px 28px;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:pop .3s ease;max-height:90vh;overflow-y:auto}
+.modal-lg{max-width:720px}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:19px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal .sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.lock-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px}
+
+/* ========== AI / INFO BOX ========== */
+.ai-box{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.ai-box .hd{display:flex;align-items:center;gap:8px;font-weight:800;color:#065f46;margin-bottom:6px;font-size:13px}
+.ai-box .bd{font-size:13px;color:#0f172a;line-height:1.65}
+.ai-msg{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe}
+.ai-msg .hd{color:#3730a3}
+
+/* ========== ROADMAP ========== */
+.road{display:flex;flex-direction:column;padding-left:6px}
+.road-step{display:flex;gap:12px;align-items:flex-start}
+.road-dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--gold);background:#fff;flex-shrink:0;margin-top:3px;z-index:2}
+.road-dot.done{background:var(--gold);border-color:var(--gold3)}
+.road-dot.now{background:#fff;border-color:var(--gold);box-shadow:0 0 0 5px rgba(212,168,67,.2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 5px rgba(212,168,67,.2)}50%{box-shadow:0 0 0 10px rgba(212,168,67,.08)}}
+.road-line{width:2px;height:30px;background:#e2e8f0;margin-left:6px}
+.road-line.done{background:var(--gold)}
+.road-step b{font-size:14px;color:var(--navy)}
+.road-step small{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+
+/* ========== MARKET ========== */
+.market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.market-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;transition:.2s;position:relative}
+.market-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(15,23,42,.1);border-color:var(--gold)}
+.market-img{height:120px;background:linear-gradient(135deg,var(--navy),var(--navy3));display:flex;align-items:center;justify-content:center;color:var(--gold2);font-size:40px;font-weight:900}
+.market-body{padding:14px}
+.market-body h4{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.market-body p{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.market-price{font-size:18px;font-weight:900;color:var(--gold3)}
+.market-actions{display:flex;gap:6px;margin-top:10px}
+
+/* ========== PACKAGES ========== */
+.packages{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.pkg{border:2px solid var(--border);border-radius:14px;padding:22px 20px;background:#fff;position:relative;transition:.2s;display:flex;flex-direction:column}
+.pkg:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,23,42,.1)}
+.pkg.pop{border-color:var(--gold);background:linear-gradient(180deg,#fff 0%,#fdf6e3 100%)}
+.pkg.pop::before{content:"EN POPÜLER";position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:9.5px;font-weight:900;letter-spacing:1px;padding:4px 12px;border-radius:100px}
+.pkg h4{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.pkg .price{font-size:28px;font-weight:900;color:var(--navy);letter-spacing:-1px;line-height:1}
+.pkg .price small{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
+.pkg ul{list-style:none;margin:16px 0;flex:1}
+.pkg ul li{font-size:12.5px;padding:6px 0;color:#334155;display:flex;gap:8px;align-items:flex-start}
+.pkg ul li::before{content:"✓";color:var(--green);font-weight:900;flex-shrink:0}
+
+/* ========== WHATSAPP FLOAT ========== */
+.wa-float{position:fixed;bottom:22px;right:22px;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 26px rgba(37,211,102,.45);z-index:70;cursor:pointer;animation:waPulse 2.5s infinite}
+@keyframes waPulse{0%,100%{box-shadow:0 8px 26px rgba(37,211,102,.45)}50%{box-shadow:0 8px 36px rgba(37,211,102,.7)}}
+
+/* ========== STATUS TOGGLE ========== */
+.status-toggle{display:flex;gap:8px;align-items:center}
+.switch{position:relative;width:52px;height:28px;background:#cbd5e1;border-radius:100px;cursor:pointer;transition:.25s}
+.switch.on{background:var(--green)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.switch.on::after{left:27px}
+
+/* ========== LANG SWITCH ========== */
+.lang-switch{display:flex;gap:2px;background:#f1f5f9;border-radius:100px;padding:3px}
+.lang-switch button{padding:5px 11px;font-size:11.5px;font-weight:700;border-radius:100px;color:#64748b;transition:.2s}
+.lang-switch button.on{background:var(--navy);color:#fff}
+
+/* ========== FOOTER ========== */
+.footer{margin-top:40px;background:linear-gradient(180deg,var(--navy) 0%,#060f1f 100%);color:rgba(255,255,255,.72);padding:38px 28px 20px;border-top:3px solid var(--gold)}
+.footer-grid{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:30px;max-width:1300px;margin:0 auto}
+.footer h4{color:#fff;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.footer h4.gold{color:var(--gold)}
+.footer p,.footer a{font-size:12.5px;line-height:1.95;color:rgba(255,255,255,.65);display:block;transition:.2s}
+.footer a:hover{color:var(--gold2);padding-left:3px}
+.footer-brand{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.footer-brand .brand-logo{width:42px;height:42px}
+.footer-brand b{color:#fff;font-size:15px;font-weight:800}
+.footer-brand small{color:var(--gold);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;display:block}
+.footer-contact{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.footer-contact a{display:flex;gap:8px;align-items:center;font-size:12.5px;color:rgba(255,255,255,.8)}
+.footer-contact a:hover{color:var(--gold2)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);margin-top:28px;padding-top:18px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;color:rgba(255,255,255,.45);max-width:1300px;margin-left:auto;margin-right:auto}
+.footer-bottom .legal{display:flex;gap:16px;flex-wrap:wrap}
+.footer-bottom .legal a{font-size:11.5px;display:inline}
+.footer-warn{margin-top:16px;padding:13px 16px;background:rgba(212,168,67,.08);border-left:3px solid var(--gold);border-radius:8px;font-size:11.5px;line-height:1.75;color:rgba(255,255,255,.72);max-width:1300px;margin-left:auto;margin-right:auto}
+
+/* ========== MOBILE ========== */
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:90;background:var(--navy);color:#fff;border-radius:10px;padding:9px 13px;font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,22,40,.6);z-index:70;backdrop-filter:blur(3px)}
+.overlay.open{display:block}
+@media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:18px 14px 0}
+  .mob-toggle{display:flex}
+  .topbar{padding-left:54px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer{padding:30px 18px 18px}
+}
+@media(max-width:640px){
+  .g4,.g3,.g2{grid-template-columns:1fr}
+  .card-value{font-size:22px}
+  .footer-grid{grid-template-columns:1fr;gap:22px}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+.tab{display:none}
+.tab.on{display:block}
+.sec-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.divider{height:1px;background:#f1f5f9;margin:20px 0}
+.bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold3));border-radius:4px;transition:width .8s ease}
+.toast{position:fixed;bottom:24px;left:24px;background:var(--navy);color:#fff;padding:14px 20px;border-radius:11px;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(0,0,0,.3);z-index:300;opacity:0;transform:translateY(20px);transition:.35s;pointer-events:none;border-left:3px solid var(--gold);max-width:90vw}
+.toast.show{opacity:1;transform:translateY(0)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;background:#f1f5f9;font-size:12px;font-weight:600;color:#334155;cursor:pointer;transition:.2s}
+.chip:hover{background:#e2e8f0}
+.chip.on{background:var(--navy);color:#fff}
+.empty{text-align:center;padding:34px 14px;color:var(--muted);font-size:13px}
+.empty .ico{font-size:38px;margin-bottom:8px;opacity:.4}
+</style>
+</head>
+<body>
+
+<!-- ========== MOBILE TOGGLE ========== -->
+<button class="mob-toggle" id="mobToggle">☰</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-logo">MP</div>
+    <div>
+      <h1>MARKOPAŞA</h1>
+      <small>Çözüm Merkezi</small>
+    </div>
+  </div>
+
+  <div class="nav-group">Genel</div>
+  <button class="nav-item active" data-tab="dashboard"><i>📊</i> Dashboard</button>
+  <button class="nav-item" data-tab="categories"><i>🧩</i> Danışmanlıklar</button>
+  <button class="nav-item" data-tab="experts"><i>🧑‍💼</i> Uzmanlar</button>
+  <button class="nav-item" data-tab="market"><i>🛒</i> Market</button>
+  <button class="nav-item" data-tab="packages"><i>📦</i> Paketler</button>
+
+  <div class="nav-group">Operasyon</div>
+  <button class="nav-item" data-tab="appointments"><i>📅</i> Randevular</button>
+  <button class="nav-item" data-tab="customers"><i>👥</i> Müşteriler</button>
+  <button class="nav-item" data-tab="crm"><i>📈</i> CRM & Huni</button>
+
+  <div class="nav-group">Finans</div>
+  <button class="nav-item" data-tab="payments"><i>💳</i> Ödemeler</button>
+  <button class="nav-item" data-tab="payouts"><i>🏦</i> Hakedişler</button>
+  <button class="nav-item" data-tab="documents"><i>📄</i> Belge Kontrol</button>
+
+  <div class="nav-group">Merkez</div>
+  <button class="nav-item" data-tab="solution"><i>🏛️</i> Çözüm Merkezi</button>
+  <button class="nav-item" data-tab="whatsapp"><i>💬</i> WhatsApp Satış</button>
+  <button class="nav-item" data-tab="ai"><i>🤖</i> AI Asistan</button>
+
+  <div class="nav-group">Sistem</div>
+  <button class="nav-item" data-tab="settings"><i>⚙️</i> Ayarlar</button>
+  <button class="nav-item" data-tab="audit"><i>🔐</i> Audit Log</button>
+
+  <div class="side-user">
+    <div class="avatar">OB</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">CFO. Orhan Boyraz</div>
+      <div style="font-size:10.5px;color:var(--gold);font-weight:600" id="sessionStatus">● Oturum Açık</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== MAIN ========== -->
+<div class="app">
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <h2 id="pageTitle">Yönetim Dashboard</h2>
+      <div class="crumb">MarkoPaşa / <span id="crumb">Dashboard</span></div>
+    </div>
+    <div class="top-actions">
+      <div class="lang-switch" id="langSwitch">
+        <button class="on" data-lang="tr">TR</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="de">DE</button>
+        <button data-lang="ar">AR</button>
+      </div>
+      <div class="status-toggle">
+        <span style="font-size:12px;font-weight:700;color:#334155" id="statusLabel">AÇIK</span>
+        <div class="switch on" id="statusSwitch" onclick="toggleStatus()"></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="toast('🔔 5 yeni bildirim')">🔔</button>
+      <button class="btn btn-outline btn-sm" onclick="openLockModal()">🔒 Kilit</button>
+    </div>
+  </div>
+
+  <!-- ============ TAB: DASHBOARD ============ -->
+  <section class="tab on" id="tab-dashboard">
+
+    <div class="card" style="margin-bottom:18px">
+      <div class="ring-wrap">
+        <div class="ring">
+          <svg width="170" height="170" viewBox="0 0 170 170">
+            <defs>
+              <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#d4a843"/>
+                <stop offset="100%" stop-color="#b8922f"/>
+              </linearGradient>
+            </defs>
+            <circle class="bg" cx="85" cy="85" r="75"/>
+            <circle class="fg" id="ringFg" cx="85" cy="85" r="75"/>
+          </svg>
+          <div class="mid"><b id="ringNum">0</b><span>Platform Sağlığı</span></div>
+        </div>
+        <div style="flex:1;min-width:280px">
+          <div class="sec-title" style="margin-bottom:6px">🏛️ MarkoPaşa Çözüm Merkezi</div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px">
+            Bu ay <strong style="color:var(--navy)">₺1.284.500</strong> ciro üretildi.
+            <strong style="color:var(--gold3)">%20 komisyon</strong> modeli ile
+            <strong>₺256.900</strong> platform geliri oluştu.
+          </p>
+          <div class="grid g4" style="gap:10px">
+            <div style="background:#f8fafc;border-radius:9px;padding:10px;text-align:center"><b style="color:var(--navy);font-size:15px" id="kpiExperts">128</b><br><span style="font-size:10px;color:var(--muted)">Uzman</span></div>
+            <div style="background:#f8fafc;border-radius:9px;padding:10px;text-align:center"><b style="color:var(--navy);font-size:15px" id="kpiCustomers">2.847</b><br><span style="font-size:10px;color:var(--muted)">Müşteri</span></div>
+            <div style="background:#f8fafc;border-radius:9px;padding:10px;text-align:center"><b style="color:var(--navy);font-size:15px" id="kpiAppts">641</b><br><span style="font-size:10px;color:var(--muted)">Randevu</span></div>
+            <div style="background:#f8fafc;border-radius:9px;padding:10px;text-align:center"><b style="color:var(--navy);font-size:15px">%92</b><br><span style="font-size:10px;color:var(--muted)">Memnuniyet</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="card">
+        <div class="kpi-icon kpi-navy">💳</div>
+        <div class="card-title">Günlük Tahsilat</div>
+        <div class="card-value">₺84.300</div>
+        <span class="trend up">↗ +%12,4</span>
+      </div>
+      <div class="card">
+        <div class="kpi-icon kpi-gold">💰</div>
+        <div class="card-title">Komisyon Geliri</div>
+        <div class="card-value">₺256.900</div>
+        <span class="trend up">↗ +%18,2</span>
+      </div>
+      <div class="card">
+        <div class="kpi-icon kpi-green">🏦</div>
+        <div class="card-title">Bekleyen Hakediş</div>
+        <div class="card-value">₺428.700</div>
+        <span class="trend down">⚠ 12 uzman</span>
+      </div>
+      <div class="card">
+        <div class="kpi-icon kpi-red">📄</div>
+        <div class="card-title">Belge Bekleyen</div>
+        <div class="card-value">18</div>
+        <span class="trend down">⚠ İşlem bekliyor</span>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="sec-title">📈 Aylık Ciro & Komisyon</div>
+        <canvas id="chartCiro" height="200"></canvas>
+      </div>
+      <div class="card">
+        <div class="sec-title">🧩 Kategori Dağılımı</div>
+        <canvas id="chartCat" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="sec-title">📅 Son Randevular</div>
+        <div class="tbl-wrap">
+          <table>
+            <tr><th>Müşteri</th><th>Uzman</th><th>Hizmet</th><th class="num">Tutar</th><th>Durum</th></tr>
+            <tr><td>Ahmet Ş.</td><td>Ayşe Yılmaz</td><td>FIRE Ön Görüşme</td><td class="num">₺1.500</td><td><span class="pill pill-green">Tamamlandı</span></td></tr>
+            <tr><td>Zeynep K.</td><td>Mert Demir</td><td>Kariyer Danışmanlığı</td><td class="num">₺900</td><td><span class="pill pill-blue">Onaylandı</span></td></tr>
+            <tr><td>Burak A.</td><td>Selin Çelik</td><td>E-Ticaret Stratejisi</td><td class="num">₺2.200</td><td><span class="pill pill-amber">Bekliyor</span></td></tr>
+            <tr><td>Fatma N.</td><td>Dr. Kerem Öz</td><td>Diyetisyen</td><td class="num">₺750</td><td><span class="pill pill-green">Tamamlandı</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">🏦 Bekleyen Hakedişler</div>
+        <div class="tbl-wrap">
+          <table>
+            <tr><th>Uzman</th><th class="num">Brüt</th><th class="num">Komisyon</th><th class="num">Hakediş</th><th>Belge</th></tr>
+            <tr><td>Ayşe Yılmaz</td><td class="num">₺30.000</td><td class="num">₺6.000</td><td class="num">₺24.000</td><td><span class="pill pill-amber">Bekliyor</span></td></tr>
+            <tr><td>Mert Demir</td><td class="num">₺18.500</td><td class="num">₺3.700</td><td class="num">₺14.800</td><td><span class="pill pill-green">Onaylandı</span></td></tr>
+            <tr><td>Selin Çelik</td><td class="num">₺22.800</td><td class="num">₺4.560</td><td class="num">₺18.240</td><td><span class="pill pill-amber">Bekliyor</span></td></tr>
+            <tr><td>Dr. Kerem Öz</td><td class="num">₺12.000</td><td class="num">₺2.400</td><td class="num">₺9.600</td><td><span class="pill pill-blue">Kontrol</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ TAB: CATEGORIES ============ -->
+  <section class="tab" id="tab-categories">
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <div class="sec-title" style="margin-bottom:2px">🧩 En Fazla Talep Gören 20 Danışmanlık</div>
+          <p style="font-size:12px;color:var(--muted)">Talep sayısına göre sıralı. Ekleme/silme yetkisi admin panelde.</p>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openCategoryModal()">+ Yeni Kategori</button>
+      </div>
+    </div>
+    <div class="grid g3" id="categoryGrid"></div>
+  </section>
+
+  <!-- ============ TAB: EXPERTS ============ -->
+  <section class="tab" id="tab-experts">
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div class="sec-title" style="margin-bottom:0">🧑‍💼 Uzmanlar</div>
+        <button class="btn btn-gold btn-sm" onclick="openExpertModal()">+ Yeni Uzman</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Uzman</th><th>Uzmanlık</th><th>Şehir</th><th>Statü</th>
+            <th class="num">Komisyon</th><th>Değerlendirme</th><th>Durum</th><th></th>
+          </tr></thead>
+          <tbody id="expertTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: MARKET ============ -->
+  <section class="tab" id="tab-market">
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <div class="sec-title" style="margin-bottom:2px">🛒 MarkoPaşa Market</div>
+          <p style="font-size:12px;color:var(--muted)">Dijital ürün, eğitim, danışmanlık paketleri — anında teslim + WhatsApp ile satış</p>
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="openMarketModal()">+ Yeni Ürün</button>
+      </div>
+    </div>
+    <div class="market-grid" id="marketGrid"></div>
+  </section>
+
+  <!-- ============ TAB: PACKAGES ============ -->
+  <section class="tab" id="tab-packages">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:4px">📦 Kullanıcı Paketleri</div>
+      <p style="font-size:12px;color:var(--muted)">4 seviye abonelik modeli — aylık ücretlendirme, KDV hariç.</p>
+    </div>
+    <div class="packages" id="pkgGrid"></div>
+  </section>
+
+  <!-- ============ TAB: APPOINTMENTS ============ -->
+  <section class="tab" id="tab-appointments">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">📅 Randevu Yönetimi</div>
+      <p style="font-size:12px;color:var(--muted)">Yaklaşan, tamamlanan ve iptal edilen randevular</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Müşteri</th><th>Uzman</th><th>Hizmet</th><th>Tarih</th><th>Tip</th><th class="num">Tutar</th><th>Durum</th></tr></thead>
+          <tbody id="apptTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: CUSTOMERS ============ -->
+  <section class="tab" id="tab-customers">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">👥 Müşteri Yönetimi</div>
+      <p style="font-size:12px;color:var(--muted)">360° müşteri görünümü</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th><th>Şehir</th><th>Paket</th><th class="num">Toplam Harcama</th><th>Durum</th></tr></thead>
+          <tbody id="customerTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: CRM ============ -->
+  <section class="tab" id="tab-crm">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">📈 Satış Hunisi (CRM)</div>
+      <p style="font-size:12px;color:var(--muted)">Lead → Görüşme → Teklif → Randevu → Ödeme → Hizmet → Memnuniyet</p>
+    </div>
+    <div class="grid g3" id="crmStages"></div>
+  </section>
+
+  <!-- ============ TAB: PAYMENTS ============ -->
+  <section class="tab" id="tab-payments">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">💳 Ödeme Kayıtları</div>
+      <p style="font-size:12px;color:var(--muted)">3D Secure destekli ödeme akışı</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>İşlem ID</th><th>Müşteri</th><th>Uzman</th><th>Hizmet</th><th class="num">Brüt</th><th class="num">Komisyon (%20)</th><th class="num">Hakediş</th><th>Durum</th></tr></thead>
+          <tbody id="paymentTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: PAYOUTS ============ -->
+  <section class="tab" id="tab-payouts">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">🏦 Aylık Hakediş Raporu</div>
+      <p style="font-size:12px;color:var(--muted)">Eylül 2026 dönemi</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Uzman</th><th>Dönem</th><th class="num">Brüt Hizmet</th><th class="num">Komisyon</th><th class="num">Hakediş</th><th>Belge</th><th>Ödeme</th></tr></thead>
+          <tbody id="payoutTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: DOCUMENTS ============ -->
+  <section class="tab" id="tab-documents">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">📄 Belge / Fatura Kontrol</div>
+      <p style="font-size:12px;color:var(--muted)">e-Fatura / e-Arşiv / e-SMM / diğer</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Uzman</th><th>Belge Türü</th><th>Dönem</th><th class="num">Tutar</th><th>Durum</th><th></th></tr></thead>
+          <tbody id="docTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: SOLUTION CENTER ============ -->
+  <section class="tab" id="tab-solution">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:4px">🏛️ MarkoPaşa Çözüm Merkezi</div>
+      <p style="font-size:12px;color:var(--muted)">Uzman ↔ Müşteri ↔ MarkoPaşa üçlüsünü yöneten merkez</p>
+    </div>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card"><div class="kpi-icon kpi-gold">🤝</div><div class="card-title">Aktif Eşleşme</div><div class="card-value">184</div><span class="trend up">↗ +%8</span></div>
+      <div class="card"><div class="kpi-icon kpi-navy">🎯</div><div class="card-title">Dönüşüm Oranı</div><div class="card-value">%32,4</div><span class="trend up">↗ +3,2 puan</span></div>
+      <div class="card"><div class="kpi-icon kpi-green">⭐</div><div class="card-title">Ortalama Puan</div><div class="card-value">4,82 / 5</div><span class="trend up">↗ +0,06</span></div>
+      <div class="card"><div class="kpi-icon kpi-purple">⏱️</div><div class="card-title">Ort. Yanıt Süresi</div><div class="card-value">3,4 saat</div><span class="trend up">↘ -42 dk</span></div>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="sec-title">🎯 Aktif Kampanyalar</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="padding:12px;background:#fdf6e3;border-radius:10px;border-left:3px solid var(--gold)"><b style="font-size:13px">İlk Görüşme Ücretsiz</b><br><span style="font-size:12px;color:#7a5a1a">Yeni müşteriler 20 dk ücretsiz tanışma görüşmesi</span></div>
+          <div style="padding:12px;background:#ecfdf5;border-radius:10px;border-left:3px solid var(--green)"><b style="font-size:13px">ODAK+ Üyelik İndirimi</b><br><span style="font-size:12px;color:#065f46">İlk 3 ay %30 indirim</span></div>
+          <div style="padding:12px;background:#eff6ff;border-radius:10px;border-left:3px solid var(--blue)"><b style="font-size:13px">WhatsApp Hızlı Randevu</b><br><span style="font-size:12px;color:#1e40af">Mesajla 30 sn içinde randevu onayı</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">📞 CFO İletişim</div>
+        <div style="padding:14px;background:#f8fafc;border-radius:10px;margin-top:8px">
+          <div style="font-size:15px;font-weight:800;color:var(--navy);margin-bottom:4px">CFO. Orhan Boyraz</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Kurucu & Finans Direktörü</div>
+          <a href="tel:05409666602" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-bottom:6px">📞 0540 966 66 02</a>
+          <a href="https://wa.me/905409666602" target="_blank" class="btn btn-wa btn-sm" style="width:100%;justify-content:center">💬 WhatsApp ile Yaz</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: WHATSAPP ============ -->
+  <section class="tab" id="tab-whatsapp">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:4px">💬 WhatsApp ile Satış & Hizmet</div>
+      <p style="font-size:12px;color:var(--muted)">WhatsApp Business API ile entegre akış — randevu, hatırlatma, satış, destek</p>
+    </div>
+
+    <div class="grid g3" style="margin-bottom:16px">
+      <div class="card">
+        <div class="kpi-icon kpi-green">📥</div>
+        <div class="card-title">Gelen Mesaj</div>
+        <div class="card-value">1.284</div>
+        <span class="trend up">↗ +%22</span>
+      </div>
+      <div class="card">
+        <div class="kpi-icon kpi-gold">✅</div>
+        <div class="card-title">Randevu Dönüşüm</div>
+        <div class="card-value">%38,2</div>
+        <span class="trend up">↗ +5,1 puan</span>
+      </div>
+      <div class="card">
+        <div class="kpi-icon kpi-navy">💰</div>
+        <div class="card-title">WhatsApp Satış</div>
+        <div class="card-value">₺184.500</div>
+        <span class="trend up">↗ +%28</span>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <div class="sec-title">🚀 Otomatik Akışlar</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#ecfdf5;border-radius:10px">
+            <div><b style="font-size:13px">Karşılama Mesajı</b><br><span style="font-size:11px;color:var(--muted)">Yeni müşteri mesajı</span></div>
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#ecfdf5;border-radius:10px">
+            <div><b style="font-size:13px">Randevu Hatırlatma</b><br><span style="font-size:11px;color:var(--muted)">24 saat önce</span></div>
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#ecfdf5;border-radius:10px">
+            <div><b style="font-size:13px">Ödeme Onayı</b><br><span style="font-size:11px;color:var(--muted)">Tahsilat sonrası</span></div>
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f1f5f9;border-radius:10px">
+            <div><b style="font-size:13px">Kampanya Mesajı</b><br><span style="font-size:11px;color:var(--muted)">Pazarlama izni olanlara</span></div>
+            <div class="switch" onclick="toggleSwitch(this)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">💬 Hızlı WhatsApp Satış Linki</div>
+        <div class="field" style="margin-top:10px">
+          <label>Ürün / Hizmet</label>
+          <input type="text" id="waProduct" placeholder="Örn: FIRE Danışmanlık Paketi" />
+        </div>
+        <div class="field">
+          <label>Müşteri Adı (opsiyonel)</label>
+          <input type="text" id="waName" placeholder="Örn: Ahmet Ş." />
+        </div>
+        <div class="field">
+          <label>Mesaj</label>
+          <textarea id="waMsg" rows="3" placeholder="Otomatik doldurulacak..."></textarea>
+        </div>
+        <button class="btn btn-wa" style="width:100%;justify-content:center" onclick="sendWhatsApp()">💬 WhatsApp'tan Gönder</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: AI ============ -->
+  <section class="tab" id="tab-ai">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:4px">🤖 AI Asistan</div>
+      <p style="font-size:12px;color:var(--muted)">Sağlık/hukuk/finans alanlarında yalnızca bilgiye dayalı eşleştirme — kesin karar vermez</p>
+    </div>
+    <div class="ai-box">
+      <div class="hd">📊 Satış Analizi</div>
+      <div class="bd">Bu hafta <strong>184 lead</strong> geldi, <strong>%32,4</strong> dönüşüm oranı ile sektör ortalamasının üzerindesiniz. En güçlü kanal: WhatsApp (%38,2 dönüşüm).</div>
+    </div>
+    <div class="ai-box ai-msg">
+      <div class="hd">🧑‍💼 Uzman Performansı</div>
+      <div class="bd">Ayşe Yılmaz (FIRE Uzmanı) bu ay <strong>30.000₺</strong> ciro ile ilk sırada. Ortalama değerlendirmesi <strong>4,92/5</strong>.</div>
+    </div>
+    <div class="ai-box">
+      <div class="hd">💡 İçerik Önerisi</div>
+      <div class="bd">"2026 FIRE Stratejileri" konulu webinar düzenleyin — potansiyel talep analizi <strong>+%45</strong> öngörüyor.</div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="sec-title" style="margin-bottom:10px">💬 AI'ya Sor</div>
+      <div style="display:flex;gap:8px">
+        <input id="aiQ" type="text" placeholder="Örn: Bu ay en çok hangi kategori talep gördü?" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;outline:none" />
+        <button class="btn btn-gold" onclick="askAI()">Gönder</button>
+      </div>
+      <div id="aiAns" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: SETTINGS ============ -->
+  <section class="tab" id="tab-settings">
+    <div class="grid g2">
+      <div class="card">
+        <div class="sec-title">⚙️ Genel Ayarlar</div>
+        <div class="field"><label>Platform Adı</label><input type="text" value="MarkoPaşa Danışmanlık & Çözüm Merkezi" /></div>
+        <div class="field"><label>Varsayılan Komisyon Oranı (%)</label><input type="number" value="20" /></div>
+        <div class="field"><label>İşletme Durumu</label>
+          <select id="bizStatus">
+            <option value="open">Açık</option>
+            <option value="closed">Kapalı</option>
+            <option value="vacation">Tatil Modu</option>
+          </select>
+        </div>
+        <div class="field"><label>Varsayılan Dil</label>
+          <select><option>Türkçe</option><option>English</option><option>Deutsch</option><option>العربية</option></select>
+        </div>
+        <button class="btn btn-primary" onclick="toast('✅ Ayarlar kaydedildi')">Kaydet</button>
+      </div>
+      <div class="card">
+        <div class="sec-title">👤 Hesap Bilgileri</div>
+        <div style="padding:14px;background:#f8fafc;border-radius:10px;margin-bottom:14px">
+          <div style="font-size:16px;font-weight:800;color:var(--navy)">CFO. Orhan Boyraz</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Kurucu & Finans Direktörü</div>
+          <a href="tel:05409666602" style="display:block;font-size:13px;font-weight:700;color:var(--gold3);margin-top:8px">📞 0540 966 66 02</a>
+          <a href="https://wa.me/905409666602" target="_blank" style="display:block;font-size:13px;font-weight:700;color:#25D366;margin-top:4px">💬 WhatsApp</a>
+        </div>
+        <div class="field"><label>E-posta</label><input type="email" value="orhan@markopasa.com" /></div>
+        <div class="field"><label>Şifre Değiştir</label><input type="password" placeholder="Yeni şifre" /></div>
+        <button class="btn btn-primary" onclick="toast('🔒 Şifre güncellendi')">Şifreyi Güncelle</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="sec-title">⚠️ Finansal & Hukuki Uyarı</div>
+      <p style="font-size:12.5px;line-height:1.75;color:var(--muted)">
+        Bu platform yatırım, hukuk veya sağlık danışmanlığı sağlamaz. MarkoPaşa; uzman ile müşteriyi buluşturan, randevu/ödeme/CRM operasyonunu yöneten bir aracı teknoloji platformudur. Tüm profesyonel hizmetler ilgili uzmanın sorumluluğundadır. Sağlık, hukuk ve finans alanlarındaki mevzuata uygunluk uzman tarafından sağlanır.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ TAB: AUDIT LOG ============ -->
+  <section class="tab" id="tab-audit">
+    <div class="card" style="margin-bottom:16px">
+      <div class="sec-title" style="margin-bottom:2px">🔐 Audit Log</div>
+      <p style="font-size:12px;color:var(--muted)">Tüm kritik işlemler kayıt altına alınır</p>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Zaman</th><th>Kullanıcı</th><th>İşlem</th><th>Detay</th><th>IP</th></tr></thead>
+          <tbody id="auditTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="brand-logo">MP</div>
+          <div>
+            <b>MARKOPAŞA</b>
+            <small>ODAK LIFE 360</small>
+          </div>
+        </div>
+        <p style="margin-bottom:14px">Doğru Uzman, Doğru Çözüm. Türkiye'nin danışmanlık & çözüm merkezi.</p>
+        <div class="footer-contact">
+          <a href="tel:05409666602">📞 <span>0540 966 66 02</span></a>
+          <a href="https://wa.me/905409666602" target="_blank">💬 <span>WhatsApp ile yaz</span></a>
+          <a href="mailto:orhan@markopasa.com">✉️ <span>orhan@markopasa.com</span></a>
+          <a href="#">📍 <span>Bursa, Türkiye</span></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="gold">Platform</h4>
+        <a href="#" onclick="goTab('dashboard')">Dashboard</a>
+        <a href="#" onclick="goTab('categories')">Danışmanlıklar</a>
+        <a href="#" onclick="goTab('experts')">Uzmanlar</a>
+        <a href="#" onclick="goTab('market')">Market</a>
+        <a href="#" onclick="goTab('packages')">Paketler</a>
+      </div>
+
+      <div>
+        <h4 class="gold">Kurumsal</h4>
+        <a href="#">Hakkımızda</a>
+        <a href="#">ODAK Kulübü</a>
+        <a href="#">ODAK+ Üyelik</a>
+        <a href="#">Kariyer</a>
+        <a href="#">İletişim</a>
+      </div>
+
+      <div>
+        <h4 class="gold">Destek</h4>
+        <a href="#">Yardım Merkezi</a>
+        <a href="#">Uzman Başvurusu</a>
+        <a href="#">KVKK & Gizlilik</a>
+        <a href="#">Kullanım Koşulları</a>
+        <a href="#">Mesafeli Satış</a>
+      </div>
+    </div>
+
+    <div class="footer-warn">
+      ⚠️ <strong>Yasal Uyarı:</strong> MarkoPaşa bir aracı teknoloji platformudur. Yatırım, hukuk, sağlık ve mali danışmanlık hizmetleri yalnızca ilgili uzmanlar tarafından ve kendi mesleki sorumlulukları kapsamında sunulur. Platform hiçbir profesyonel kararın tarafı değildir. Tüm finansal hesaplamalar ve hakedişler Türkiye muhasebe mevzuatına uygun olarak uzman hukukçu ve mali müşavir kontrolü sonrası yürürlüğe girer.
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 ODAK LIFE 360 · MarkoPaşa Danışmanlık & Çözüm Merkezi. Tüm hakları saklıdır.</div>
+      <div class="legal">
+        <a href="#">KVKK</a>
+        <a href="#">Gizlilik</a>
+        <a href="#">Çerez Politikası</a>
+        <a href="#">Kullanım Koşulları</a>
+        <a href="#">Uzman Sözleşmesi</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+</div>
+
+<!-- ========== WHATSAPP FLOAT ========== -->
+<a class="wa-float" href="https://wa.me/905409666602?text=Merhaba%2C%20MarkoPa%C5%9Fa%20hizmetleri%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" title="WhatsApp ile yaz">💬</a>
+
+<!-- ========== LOCK MODAL ========== -->
+<div class="modal-bg" id="lockModal">
+  <div class="modal">
+    <div class="lock-icon">🔒</div>
+    <h3>Yönetim Paneli Kilidi</h3>
+    <div class="sub">Devam etmek için şifrenizi girin</div>
+    <div class="field">
+      <label>Kullanıcı Adı</label>
+      <input type="text" id="lockUser" value="admin" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Şifre</label>
+      <input type="password" id="lockPass" placeholder="••••••••" autocomplete="current-password" />
+      <div class="hint">Demo şifre: <strong>markopasa2026</strong></div>
+    </div>
+    <div id="lockError" style="display:none;color:var(--red);font-size:12px;font-weight:600;margin-bottom:10px">❌ Hatalı kullanıcı adı veya şifre</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="tryUnlock()">🔓 Kilidi Aç</button>
+  </div>
+</div>
+
+<!-- ========== CATEGORY MODAL ========== -->
+<div class="modal-bg" id="catModal">
+  <div class="modal">
+    <h3>Yeni Danışmanlık Kategorisi</h3>
+    <div class="sub">Sisteme yeni bir uzmanlık alanı ekle</div>
+    <div class="field"><label>Kategori Adı</label><input type="text" id="catName" placeholder="Örn: Kripto Varlık Danışmanlığı" /></div>
+    <div class="field"><label>İkon (emoji)</label><input type="text" id="catIcon" value="💡" maxlength="4" /></div>
+    <div class="field"><label>Açıklama</label><textarea id="catDesc" rows="2" placeholder="Kısa açıklama"></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveCategory()">Kaydet</button>
+      <button class="btn btn-ghost" onclick="closeModal('catModal')">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== EXPERT MODAL ========== -->
+<div class="modal-bg" id="expertModal">
+  <div class="modal modal-lg">
+    <h3>Yeni Uzman Ekle</h3>
+    <div class="sub">Uzman kayıt formu</div>
+    <div class="grid g2" style="gap:0 14px">
+      <div class="field"><label>Ad Soyad</label><input type="text" id="expName" placeholder="Örn: Ayşe Yılmaz" /></div>
+      <div class="field"><label>Uzmanlık</label><input type="text" id="expArea" placeholder="Örn: FIRE / Finansal Özgürlük" /></div>
+      <div class="field"><label>Şehir</label><input type="text" id="expCity" value="Bursa" /></div>
+      <div class="field"><label>Statü</label>
+        <select id="expStatus">
+          <option>Büro Sahibi</option>
+          <option>Serbest Meslek</option>
+          <option>Freelance</option>
+        </select>
+      </div>
+      <div class="field"><label>Komisyon Oranı (%)</label><input type="number" id="expComm" value="20" /></div>
+      <div class="field"><label>Telefon</label><input type="tel" id="expPhone" placeholder="05xx xxx xx xx" /></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveExpert()">Uzmanı Kaydet</button>
+      <button class="btn btn-ghost" onclick="closeModal('expertModal')">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MARKET MODAL ========== -->
+<div class="modal-bg" id="marketModal">
+  <div class="modal">
+    <h3>Yeni Market Ürünü</h3>
+    <div class="sub">Dijital ürün, eğitim veya hizmet paketi</div>
+    <div class="field"><label>Ürün Adı</label><input type="text" id="mkName" placeholder="Örn: FIRE Hızlandırma Paketi" /></div>
+    <div class="field"><label>Açıklama</label><textarea id="mkDesc" rows="2" placeholder="Kısa açıklama"></textarea></div>
+    <div class="field"><label>Fiyat (₺)</label><input type="number" id="mkPrice" value="1500" /></div>
+    <div class="field"><label>İkon</label><input type="text" id="mkIcon" value="📦" maxlength="4" /></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveMarket()">Kaydet</button>
+      <button class="btn btn-ghost" onclick="closeModal('marketModal')">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOAST ========== -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   ODAK / MARKOPAŞA PLATFORM — FRONTEND LOGIC
+   ========================================================= */
+
+/* ========== STATE ========== */
+const STATE = {
+  lang:'tr',
+  status:'open',
+  authed:true, // demo: açık
+  categories:[
+    {id:1, name:'Finansal Özgürlük (FIRE)', icon:'🔥', demand:98, desc:'Erken emeklilik ve finansal bağımsızlık planı'},
+    {id:2, name:'Kişisel Finans', icon:'💰', demand:96, desc:'Bütçe, tasarruf ve nakit akışı yönetimi'},
+    {id:3, name:'Yatırım Danışmanlığı', icon:'📈', demand:94, desc:'Hisse, fon, tahvil ve portföy yönetimi'},
+    {id:4, name:'Gayrimenkul / Emlak', icon:'🏠', demand:92, desc:'Konut, arsa ve kira getirisi analizi'},
+    {id:5, name:'Dijital Pazarlama', icon:'📱', demand:91, desc:'Sosyal medya, reklam ve growth stratejisi'},
+    {id:6, name:'E-Ticaret', icon:'🛒', demand:89, desc:'Trendyol, Hepsiburada, kendi mağaza'},
+    {id:7, name:'Yapay Zekâ & AI', icon:'🤖', demand:88, desc:'AI agent, otomasyon, ChatGPT entegrasyonu'},
+    {id:8, name:'Kariyer Danışmanlığı', icon:'🎯', demand:87, desc:'CV, mülakat, kariyer geçişi'},
+    {id:9, name:'Girişimcilik', icon:'🚀', demand:86, desc:'Startup, iş modeli, yatırımcı sunumu'},
+    {id:10, name:'CFO Danışmanlığı', icon:'💼', demand:85, desc:'KOBİ finans yönetimi, nakit akışı'},
+    {id:11, name:'Liderlik & Yönetim', icon:'👑', demand:83, desc:'Takım yönetimi, motivasyon, liderlik'},
+    {id:12, name:'Strateji & Organizasyon', icon:'🧭', demand:81, desc:'Şirket stratejisi, OKR, süreç'},
+    {id:13, name:'İnsan Kaynakları', icon:'🧑‍💻', demand:79, desc:'İşe alım, performans, İK sistemi'},
+    {id:14, name:'Avukat / Hukuk', icon:'⚖️', demand:78, desc:'Sözleşme, ticaret hukuku, KVKK'},
+    {id:15, name:'Mali Müşavir', icon:'🧾', demand:77, desc:'Vergi, muhasebe, şirket kuruluşu'},
+    {id:16, name:'KOSGEB & Teşvik', icon:'🏛️', demand:75, desc:'Hibe, destek, devlet teşvikleri'},
+    {id:17, name:'Psikolog', icon:'🧠', demand:74, desc:'Bireysel, aile, çift terapisi'},
+    {id:18, name:'Diyetisyen', icon:'🥗', demand:73, desc:'Beslenme, kilo yönetimi, sporcu diyeti'},
+    {id:19, name:'Doktor (Uzman Hekim)', icon:'⚕️', demand:71, desc:'Sağlık danışmanlığı — mevzuata uygun'},
+    {id:20, name:'Eğitim & Akademik', icon:'🎓', demand:70, desc:'Yurt dışı eğitim, sınav, dil'}
+  ],
+  experts:[
+    {id:1, name:'Ayşe Yılmaz', area:'FIRE / Finansal Özgürlük', city:'Bursa', status:'Serbest Meslek', comm:20, rating:4.92, active:true},
+    {id:2, name:'Mert Demir', area:'Kariyer Danışmanlığı', city:'İstanbul', status:'Büro Sahibi', comm:20, rating:4.87, active:true},
+    {id:3, name:'Selin Çelik', area:'E-Ticaret', city:'İzmir', status:'Freelance', comm:22, rating:4.81, active:true},
+    {id:4, name:'Dr. Kerem Öz', area:'Diyetisyen', city:'Bursa', status:'Büro Sahibi', comm:18, rating:4.95, active:true},
+    {id:5, name:'Av. Zeynep Aydın', area:'Hukuk', city:'Ankara', status:'Serbest Meslek', comm:20, rating:4.88, active:true},
+    {id:6, name:'Prof. Dr. Ali Vural', area:'CFO Danışmanlığı', city:'Bursa', status:'Büro Sahibi', comm:15, rating:4.96, active:true},
+    {id:7, name:'Elif Şahin', area:'Dijital Pazarlama', city:'İstanbul', status:'Freelance', comm:22, rating:4.74, active:false},
+    {id:8, name:'Murat Kaya', area:'Mali Müşavir', city:'Bursa', status:'Serbest Meslek', comm:20, rating:4.83, active:true}
+  ],
+  products:[
+    {id:1, name:'FIRE Hızlandırma Paketi', desc:'3 aylık birebir finansal özgürlük koçluğu', price:12000, icon:'🔥'},
+    {id:2, name:'CV + LinkedIn Optimizasyon', desc:'Kariyer uzmanı ile 2 seans', price:2500, icon:'📄'},
+    {id:3, name:'E-Ticaret Kurulum Danışmanlığı', desc:'Trendyol/Hepsiburada mağaza kurulumu', price:4800, icon:'🛒'},
+    {id:4, name:'Yapay Zekâ İş Otomasyonu', desc:'AI agent kurulum ve eğitim', price:8500, icon:'🤖'},
+    {id:5, name:'Şirket Kuruluş + Vergi Paketi', desc:'Mali müşavir + hukuk danışmanlığı', price:6500, icon:'🏢'},
+    {id:6, name:'Gayrimenkul Yatırım Analizi', desc:'ROI + CAP rate raporu', price:3200, icon:'🏠'}
+  ],
+  audit:[
+    {t:new Date(Date.now()-1000*60*5).toLocaleString('tr-TR'), u:'admin', a:'Giriş', d:'Şifreli panel oturumu', ip:'88.245.x.x'},
+    {t:new Date(Date.now()-1000*60*32).toLocaleString('tr-TR'), u:'CFO. Orhan Boyraz', a:'Komisyon Güncelleme', d:'Uzman #6 → %15', ip:'88.245.x.x'},
+    {t:new Date(Date.now()-1000*60*120).toLocaleString('tr-TR'), u:'Finans', a:'Hakediş Onayı', d:'Ayşe Yılmaz — Eylül 2026', ip:'88.245.x.x'},
+    {t:new Date(Date.now()-1000*60*280).toLocaleString('tr-TR'), u:'admin', a:'Uzman Ekle', d:'Dr. Kerem Öz', ip:'88.245.x.x'}
+  ]
+};
+
+/* ========== NAV ========== */
+const tabs = document.querySelectorAll('.nav-item');
+const views = document.querySelectorAll('.tab');
+const pageTitle = document.getElementById('pageTitle');
+const crumb = document.getElementById('crumb');
+const TITLES = {
+  dashboard:'Yönetim Dashboard', categories:'Danışmanlık Kategorileri',
+  experts:'Uzmanlar', market:'MarkoPaşa Market', packages:'Paketler',
+  appointments:'Randevular', customers:'Müşteriler', crm:'CRM & Satış Hunisi',
+  payments:'Ödemeler', payouts:'Hakedişler', documents:'Belge Kontrol',
+  solution:'Çözüm Merkezi', whatsapp:'WhatsApp Satış', ai:'AI Asistan',
+  settings:'Ayarlar', audit:'Audit Log'
+};
+
+function goTab(id){
+  if(!STATE.authed && id!=='dashboard'){ openLockModal(); return; }
+  views.forEach(v=>v.classList.remove('on'));
+  document.getElementById('tab-'+id)?.classList.add('on');
+  tabs.forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.nav-item[data-tab="${id}"]`)?.classList.add('active');
+  pageTitle.textContent = TITLES[id] || 'Dashboard';
+  crumb.textContent = TITLES[id] || 'Dashboard';
+  closeSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goTab(t.dataset.tab)));
+
+/* ========== SIDEBAR (Mobile) ========== */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+document.getElementById('mobToggle').onclick = ()=>{ sidebar.classList.toggle('open'); overlay.classList.toggle('open'); };
+overlay.onclick = closeSidebar;
+
+/* ========== STATUS TOGGLE ========== */
+function toggleStatus(){
+  const sw = document.getElementById('statusSwitch');
+  const lbl = document.getElementById('statusLabel');
+  sw.classList.toggle('on');
+  STATE.status = sw.classList.contains('on') ? 'open' : 'closed';
+  lbl.textContent = STATE.status==='open'?'AÇIK':'KAPALI';
+  toast(STATE.status==='open'?'🟢 İşletme açık moda alındı':'🔴 İşletme kapalı moda alındı');
+}
+function toggleSwitch(el){ el.classList.toggle('on'); }
+
+/* ========== LANG SWITCH ========== */
+document.querySelectorAll('#langSwitch button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('#langSwitch button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    STATE.lang = b.dataset.lang;
+    toast(`🌐 Dil değiştirildi: ${b.textContent}`);
+    // Placeholder — i18n gerçek uygulamada JSON sözlükten yüklenir
+  };
+});
+
+/* ========== LOCK MODAL ========== */
+const LOCK = { user:'admin', pass:'markopasa2026' };
+function openLockModal(){
+  document.getElementById('lockModal').classList.add('open');
+  document.getElementById('lockError').style.display='none';
+  setTimeout(()=>document.getElementById('lockPass').focus(),150);
+}
+function tryUnlock(){
+  const u = document.getElementById('lockUser').value.trim();
+  const p = document.getElementById('lockPass').value;
+  if(u===LOCK.user && p===LOCK.pass){
+    STATE.authed = true;
+    document.getElementById('lockModal').classList.remove('open');
+    document.getElementById('sessionStatus').textContent='● Oturum Açık';
+    toast('🔓 Yönetim paneline erişim sağlandı');
+    addAudit('Giriş','Şifreli panel — başarılı');
+  } else {
+    document.getElementById('lockError').style.display='block';
+    addAudit('Giriş Reddedildi','Hatalı kimlik denemesi');
+  }
+}
+document.getElementById('lockPass').addEventListener('keypress',e=>{ if(e.key==='Enter') tryUnlock(); });
+
+/* ========== MODAL HELPERS ========== */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function openCategoryModal(){ openModal('catModal'); }
+function openExpertModal(){ openModal('expertModal'); }
+function openMarketModal(){ openModal('marketModal'); }
+
+/* ========== CATEGORY ========== */
+function renderCategories(){
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = STATE.categories.map(c=>`
+    <div class="card" style="position:relative">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div style="font-size:28px">${c.icon}</div>
+        <button class="btn btn-danger btn-sm" onclick="deleteCategory(${c.id})" title="Sil">🗑️</button>
+      </div>
+      <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px">${c.name}</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;min-height:36px">${c.desc||''}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <span class="pill pill-gold">Talep: ${c.demand}</span>
+        <div class="bar" style="width:70px"><span style="width:${c.demand}%"></span></div>
+      </div>
+    </div>
+  `).join('');
+}
+function saveCategory(){
+  const name = document.getElementById('catName').value.trim();
+  const icon = document.getElementById('catIcon').value.trim()||'💡';
+  const desc = document.getElementById('catDesc').value.trim();
+  if(!name){ toast('⚠️ Kategori adı gerekli'); return; }
+  STATE.categories.push({id:Date.now(), name, icon, desc, demand:60});
+  renderCategories();
+  closeModal('catModal');
+  document.getElementById('catName').value='';
+  document.getElementById('catDesc').value='';
+  toast('✅ Kategori eklendi: '+name);
+  addAudit('Kategori Ekle', name);
+}
+function deleteCategory(id){
+  const c = STATE.categories.find(x=>x.id===id);
+  if(!confirm(`"${c.name}" kategorisini silmek istediğinize emin misiniz?`)) return;
+  STATE.categories = STATE.categories.filter(x=>x.id!==id);
+  renderCategories();
+  toast('🗑️ Kategori silindi');
+  addAudit('Kategori Sil', c.name);
+}
+
+/* ========== EXPERTS ========== */
+function renderExperts(){
+  const tbody = document.getElementById('expertTable');
+  tbody.innerHTML = STATE.experts.map(e=>`
+    <tr>
+      <td><strong>${e.name}</strong></td>
+      <td>${e.area}</td>
+      <td>${e.city}</td>
+      <td><span class="pill ${e.status==='Büro Sahibi'?'pill-blue':e.status==='Serbest Meslek'?'pill-green':'pill-purple'}">${e.status}</span></td>
+      <td class="num">%${e.comm}</td>
+      <td><span class="pill pill-gold">⭐ ${e.rating.toFixed(2)}</span></td>
+      <td>${e.active?'<span class="pill pill-green">Aktif</span>':'<span class="pill pill-slate">Pasif</span>'}</td>
+      <td style="text-align:right"><button class="btn btn-danger btn-sm" onclick="deleteExpert(${e.id})">🗑️</button></td>
+    </tr>
+  `).join('');
+  document.getElementById('kpiExperts').textContent = STATE.experts.length*16; // demo
+}
+function saveExpert(){
+  const name = document.getElementById('expName').value.trim();
+  const area = document.getElementById('expArea').value.trim();
+  const city = document.getElementById('expCity').value.trim()||'Bursa';
+  const status = document.getElementById('expStatus').value;
+  const comm = parseInt(document.getElementById('expComm').value)||20;
+  if(!name||!area){ toast('⚠️ Ad ve uzmanlık gerekli'); return; }
+  STATE.experts.push({id:Date.now(), name, area, city, status, comm, rating:5.00, active:true});
+  renderExperts();
+  closeModal('expertModal');
+  document.getElementById('expName').value='';
+  document.getElementById('expArea').value='';
+  document.getElementById('expPhone').value='';
+  toast('✅ Uzman eklendi: '+name);
+  addAudit('Uzman Ekle', name);
+}
+function deleteExpert(id){
+  const e = STATE.experts.find(x=>x.id===id);
+  if(!confirm(`"${e.name}" uzmanını silmek istediğinize emin misiniz?`)) return;
+  STATE.experts = STATE.experts.filter(x=>x.id!==id);
+  renderExperts();
+  toast('🗑️ Uzman silindi');
+  addAudit('Uzman Sil', e.name);
+}
+
+/* ========== MARKET ========== */
+function renderMarket(){
+  const grid = document.getElementById('marketGrid');
+  grid.innerHTML = STATE.products.map(p=>`
+    <div class="market-card">
+      <div class="market-img">${p.icon}</div>
+      <div class="market-body">
+        <h4>${p.name}</h4>
+        <p>${p.desc}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="market-price">₺${p.price.toLocaleString('tr-TR')}</span>
+        </div>
+        <div class="market-actions">
+          <button class="btn btn-wa btn-sm" style="flex:1;justify-content:center" onclick="marketWA(${p.id})">💬 WhatsApp</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function saveMarket(){
+  const name = document.getElementById('mkName').value.trim();
+  const desc = document.getElementById('mkDesc').value.trim();
+  const price = parseInt(document.getElementById('mkPrice').value)||0;
+  const icon = document.getElementById('mkIcon').value.trim()||'📦';
+  if(!name||!price){ toast('⚠️ Ürün adı ve fiyat gerekli'); return; }
+  STATE.products.push({id:Date.now(), name, desc, price, icon});
+  renderMarket();
+  closeModal('marketModal');
+  document.getElementById('mkName').value='';
+  document.getElementById('mkDesc').value='';
+  toast('✅ Market ürünü eklendi');
+  addAudit('Market Ürün Ekle', name);
+}
+function deleteProduct(id){
+  const p = STATE.products.find(x=>x.id===id);
+  if(!confirm(`"${p.name}" ürününü silmek istediğinize emin misiniz?`)) return;
+  STATE.products = STATE.products.filter(x=>x.id!==id);
+  renderMarket();
+  toast('🗑️ Ürün silindi');
+  addAudit('Market Ürün Sil', p.name);
+}
+function marketWA(id){
+  const p = STATE.products.find(x=>x.id===id);
+  const msg = encodeURIComponent(`Merhaba, "${p.name}" (₺${p.price.toLocaleString('tr-TR')}) hakkında bilgi almak istiyorum.`);
+  window.open(`https://wa.me/905409666602?text=${msg}`,'_blank');
+}
+
+/* ========== PACKAGES ========== */
+const PACKAGES = [
+  {name:'Ücretsiz', price:'0', period:'₺/ay', pop:false, feats:[
+    'Uzman arama ve profil görüntüleme',
+    'Ayda 1 ücretsiz tanışma görüşmesi',
+    'Temel blog ve akademi içerikleri',
+    'E-posta desteği'
+  ]},
+  {name:'Standart', price:'499', period:'₺/ay', pop:true, feats:[
+    'Ücretsiz paket tüm özellikleri',
+    'Ayda 4 uzman randevusu',
+    'WhatsApp hızlı destek',
+    'ODAK Kulübü temel üyelik',
+    'Online ödeme ve fatura'
+  ]},
+  {name:'Pro', price:'1.299', period:'₺/ay', pop:false, feats:[
+    'Standart paket tüm özellikleri',
+    'Sınırsız randevu',
+    'AI finansal koç erişimi',
+    'Kişisel yol haritası',
+    'Öncelikli uzman eşleştirme',
+    'ODAK+ Premium üyelik'
+  ]},
+  {name:'Kurumsal', price:'Özel', period:'', pop:false, feats:[
+    'Pro paket tüm özellikleri',
+    'Şirket hesabı — çoklu kullanıcı',
+    'CFO danışmanlığı (aylık 4 saat)',
+    'Özel entegrasyon (SSO, API)',
+    'Atanmış hesap yöneticisi',
+    'Yıllık strateji raporu'
+  ]}
+];
+function renderPackages(){
+  document.getElementById('pkgGrid').innerHTML = PACKAGES.map(p=>`
+    <div class="pkg ${p.pop?'pop':''}">
+      <h4>${p.name}</h4>
+      <div class="price">${p.price}${p.period?`<small> ${p.period}</small>`:''}</div>
+      <ul>${p.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
+      <button class="btn ${p.pop?'btn-gold':'btn-primary'}" style="width:100%;justify-content:center" onclick="selectPackage('${p.name}')">
+        ${p.name==='Kurumsal'?'İletişime Geç':'Paketi Seç'}
+      </button>
+    </div>
+  `).join('');
+}
+function selectPackage(name){
+  if(name==='Kurumsal'){ window.open('https://wa.me/905409666602?text=Kurumsal%20paket%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.','_blank'); return; }
+  toast(`✅ ${name} paketi seçildi — ödeme sayfasına yönlendiriliyor`);
+  addAudit('Paket Seçimi', name);
+}
+
+/* ========== APPOINTMENTS ========== */
+const APPTS = [
+  {id:'#A-1042', cust:'Ahmet Ş.', exp:'Ayşe Yılmaz', svc:'FIRE Ön Görüşme', date:'25.09.2026 14:00', type:'Online', amt:1500, st:'Tamamlandı'},
+  {id:'#A-1043', cust:'Zeynep K.', exp:'Mert Demir', svc:'Kariyer Danışmanlığı', date:'26.09.2026 10:30', type:'Yüz Yüze', amt:900, st:'Onaylandı'},
+  {id:'#A-1044', cust:'Burak A.', exp:'Selin Çelik', svc:'E-Ticaret Stratejisi', date:'27.09.2026 16:00', type:'Online', amt:2200, st:'Bekliyor'},
+  {id:'#A-1045', cust:'Fatma N.', exp:'Dr. Kerem Öz', svc:'Diyetisyen', date:'28.09.2026 11:00', type:'Yüz Yüze', amt:750, st:'Tamamlandı'},
+  {id:'#A-1046', cust:'Emre T.', exp:'Prof. Dr. Ali Vural', svc:'CFO Danışmanlığı', date:'29.09.2026 15:00', type:'Online', amt:5000, st:'Onaylandı'}
+];
+function renderAppts(){
+  document.getElementById('apptTable').innerHTML = APPTS.map(a=>`
+    <tr>
+      <td><strong>${a.id}</strong></td>
+      <td>${a.cust}</td>
+      <td>${a.exp}</td>
+      <td>${a.svc}</td>
+      <td>${a.date}</td>
+      <td><span class="pill ${a.type==='Online'?'pill-blue':'pill-purple'}">${a.type}</span></td>
+      <td class="num">₺${a.amt.toLocaleString('tr-TR')}</td>
+      <td>${
+        a.st==='Tamamlandı'?'<span class="pill pill-green">Tamamlandı</span>':
+        a.st==='Onaylandı'?'<span class="pill pill-blue">Onaylandı</span>':
+        '<span class="pill pill-amber">Bekliyor</span>'
+      }</td>
+    </tr>
+  `).join('');
+}
+
+/* ========== CUSTOMERS ========== */
+const CUSTOMERS = [
+  {name:'Ahmet Şahin', email:'ahmet@ornek.com', phone:'0532 111 22 33', city:'Bursa', pkg:'Pro', spend:48500, st:'Aktif'},
+  {name:'Zeynep Kaya', email:'zeynep@ornek.com', phone:'0533 222 33 44', city:'İstanbul', pkg:'Standart', spend:12400, st:'Aktif'},
+  {name:'Burak Aslan', email:'burak@ornek.com', phone:'0534 333 44 55', city:'İzmir', pkg:'Pro', spend:31200, st:'Aktif'},
+  {name:'Fatma Nur', email:'fatma@ornek.com', phone:'0535 444 55 66', city:'Bursa', pkg:'Ücretsiz', spend:1500, st:'Pasif'},
+  {name:'Emre Toprak', email:'emre@ornek.com', phone:'0536 555 66 77', city:'Ankara', pkg:'Kurumsal', spend:185000, st:'Aktif'}
+];
+function renderCustomers(){
+  document.getElementById('customerTable').innerHTML = CUSTOMERS.map(c=>`
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.email}</td>
+      <td>${c.phone}</td>
+      <td>${c.city}</td>
+      <td><span class="pill ${c.pkg==='Pro'?'pill-gold':c.pkg==='Kurumsal'?'pill-purple':c.pkg==='Standart'?'pill-blue':'pill-slate'}">${c.pkg}</span></td>
+      <td class="num">₺${c.spend.toLocaleString('tr-TR')}</td>
+      <td>${c.st==='Aktif'?'<span class="pill pill-green">Aktif</span>':'<span class="pill pill-slate">Pasif</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+/* ========== CRM ========== */
+function renderCRM(){
+  const stages = [
+    {name:'Lead', count:184, color:'#64748b'},
+    {name:'Görüşme', count:112, color:'#3b82f6'},
+    {name:'İhtiyaç Analizi', count:84, color:'#8b5cf6'},
+    {name:'Teklif', count:61, color:'#f59e0b'},
+    {name:'Randevu', count:48, color:'#d4a843'},
+    {name:'Ödeme', count:39, color:'#10b981'},
+    {name:'Hizmet', count:37, color:'#059669'},
+    {name:'Memnuniyet', count:34, color:'#047857'},
+    {name:'Tekrar', count:22, color:'#065f46'}
+  ];
+  document.getElementById('crmStages').innerHTML = stages.map(s=>`
+    <div class="card" style="border-left:4px solid ${s.color}">
+      <div class="card-title">${s.name}</div>
+      <div class="card-value">${s.count}</div>
+      <div class="bar" style="margin-top:8px"><span style="width:${(s.count/184*100).toFixed(0)}%;background:${s.color}"></span></div>
+    </div>
+  `).join('');
+}
+
+/* ========== PAYMENTS ========== */
+const PAYMENTS = [
+  {id:'TXN-9821', cust:'Ahmet Ş.', exp:'Ayşe Yılmaz', svc:'FIRE Ön Görüşme', gross:1500, st:'Başarılı'},
+  {id:'TXN-9822', cust:'Zeynep K.', exp:'Mert Demir', svc:'Kariyer Danışmanlığı', gross:900, st:'Başarılı'},
+  {id:'TXN-9823', cust:'Burak A.', exp:'Selin Çelik', svc:'E-Ticaret Stratejisi', gross:2200, st:'Bekliyor'},
+  {id:'TXN-9824', cust:'Fatma N.', exp:'Dr. Kerem Öz', svc:'Diyetisyen', gross:750, st:'Başarılı'},
+  {id:'TXN-9825', cust:'Emre T.', exp:'Prof. Dr. Ali Vural', svc:'CFO Danışmanlığı', gross:5000, st:'Başarılı'}
+];
+function renderPayments(){
+  document.getElementById('paymentTable').innerHTML = PAYMENTS.map(p=>{
+    const comm = p.gross*0.20;
+    const payout = p.gross-comm;
+    return `
+      <tr>
+        <td><strong>${p.id}</strong></td>
+        <td>${p.cust}</td>
+        <td>${p.exp}</td>
+        <td>${p.svc}</td>
+        <td class="num">₺${p.gross.toLocaleString('tr-TR')}</td>
+        <td class="num" style="color:#b8922f">₺${comm.toLocaleString('tr-TR')}</td>
+        <td class="num" style="color:#047857">₺${payout.toLocaleString('tr-TR')}</td>
+        <td>${p.st==='Başarılı'?'<span class="pill pill-green">Başarılı</span>':'<span class="pill pill-amber">Bekliyor</span>'}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ========== PAYOUTS ========== */
+const PAYOUTS = [
+  {name:'Ayşe Yılmaz', period:'Eylül 2026', gross:30000, comm:6000, doc:'Bekliyor', pay:'Bekliyor'},
+  {name:'Mert Demir', period:'Eylül 2026', gross:18500, comm:3700, doc:'Onaylandı', pay:'Hazır'},
+  {name:'Selin Çelik', period:'Eylül 2026', gross:22800, comm:5016, doc:'Bekliyor', pay:'Bekliyor'},
+  {name:'Dr. Kerem Öz', period:'Eylül 2026', gross:12000, comm:2160, doc:'Kontrol', pay:'Bekliyor'},
+  {name:'Prof. Dr. Ali Vural', period:'Eylül 2026', gross:95000, comm:14250, doc:'Onaylandı', pay:'Ödendi'}
+];
+function renderPayouts(){
+  document.getElementById('payoutTable').innerHTML = PAYOUTS.map(p=>{
+    const net = p.gross - p.comm;
+    return `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.period}</td>
+        <td class="num">₺${p.gross.toLocaleString('tr-TR')}</td>
+        <td class="num" style="color:#b8922f">₺${p.comm.toLocaleString('tr-TR')}</td>
+        <td class="num" style="color:#047857">₺${net.toLocaleString('tr-TR')}</td>
+        <td>${
+          p.doc==='Bekliyor'?'<span class="pill pill-amber">Bekliyor</span>':
+          p.doc==='Onaylandı'?'<span class="pill pill-green">Onaylandı</span>':
+          '<span class="pill pill-blue">Kontrol</span>'
+        }</td>
+        <td>${
+          p.pay==='Bekliyor'?'<span class="pill pill-amber">Bekliyor</span>':
+          p.pay==='Hazır'?'<span class="pill pill-blue">Hazır</span>':
+          '<span class="pill pill-green">Ödendi</span>'
+        }</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ========== DOCUMENTS ========== */
+const DOCS = [
+  {name:'Ayşe Yılmaz', type:'e-SMM', period:'Eylül 2026', amt:24000, st:'Bekliyor'},
+  {name:'Mert Demir', type:'e-Fatura', period:'Eylül 2026', amt:14800, st:'Onaylandı'},
+  {name:'Selin Çelik', type:'e-Arşiv', period:'Eylül 2026', amt:17784, st:'Bekliyor'},
+  {name:'Dr. Kerem Öz', type:'e-SMM', period:'Eylül 2026', amt:9840, st:'Kontrol'},
+  {name:'Prof. Dr. Ali Vural', type:'e-Fatura', period:'Eylül 2026', amt:80750, st:'Onaylandı'}
+];
+function renderDocs(){
+  document.getElementById('docTable').innerHTML = DOCS.map(d=>`
+    <tr>
+      <td><strong>${d.name}</strong></td>
+      <td>${d.type}</td>
+      <td>${d.period}</td>
+      <td class="num">₺${d.amt.toLocaleString('tr-TR')}</td>
+      <td>${
+        d.st==='Bekliyor'?'<span class="pill pill-amber">Bekliyor</span>':
+        d.st==='Onaylandı'?'<span class="pill pill-green">Onaylandı</span>':
+        '<span class="pill pill-blue">Kontrol</span>'
+      }</td>
+      <td style="text-align:right">
+        ${d.st==='Bekliyor'?`<button class="btn btn-gold btn-sm" onclick="approveDoc('${d.name}')">Onayla</button>`:''}
+      </td>
+    </tr>
+  `).join('');
+}
+function approveDoc(name){
+  toast(`✅ ${name} belgesi onaylandı`);
+  addAudit('Belge Onay', name);
+}
+
+/* ========== AUDIT ========== */
+function renderAudit(){
+  document.getElementById('auditTable').innerHTML = STATE.audit.map(a=>`
+    <tr><td>${a.t}</td><td><strong>${a.u}</strong></td><td><span class="pill pill-blue">${a.a}</span></td><td>${a.d}</td><td style="font-family:monospace;font-size:12px">${a.ip}</td></tr>
+  `).join('');
+}
+function addAudit(action, detail){
+  STATE.audit.unshift({
+    t:new Date().toLocaleString('tr-TR'),
+    u:'CFO. Orhan Boyraz', a:action, d:detail, ip:'88.245.x.x'
+  });
+  if(STATE.audit.length>50) STATE.audit.pop();
+  renderAudit();
+}
+
+/* ========== WHATSAPP ========== */
+function sendWhatsApp(){
+  const prod = document.getElementById('waProduct').value.trim()||'hizmet';
+  const name = document.getElementById('waName').value.trim();
+  const custom = document.getElementById('waMsg').value.trim();
+  const greeting = name ? `Merhaba ${name}, ` : 'Merhaba, ';
+  const msg = custom || `${greeting}MarkoPaşa üzerinden "${prod}" hakkında bilgi almak istiyorum.`;
+  window.open(`https://wa.me/905409666602?text=${encodeURIComponent(msg)}`,'_blank');
+  toast('💬 WhatsApp açılıyor...');
+  addAudit('WhatsApp Satış', prod);
+}
+
+/* ========== AI ========== */
+function askAI(){
+  const q = document.getElementById('aiQ').value.trim();
+  if(!q){ toast('⚠️ Soru girin'); return; }
+  const ans = document.getElementById('aiAns');
+  ans.innerHTML = '<div class="ai-box"><div class="hd">🤖 Analiz ediliyor...</div></div>';
+  setTimeout(()=>{
+    let reply = '';
+    const low = q.toLowerCase();
+    if(low.includes('kategori')||low.includes('talep')){
+      reply = `Bu ay en çok talep gören kategoriler: <strong>1) Finansal Özgürlük (FIRE)</strong> (98 puan), <strong>2) Kişisel Finans</strong> (96), <strong>3) Yatırım Danışmanlığı</strong> (94). Son 30 günde FIRE kategorisinde <strong>+%42</strong> talep artışı var.`;
+    } else if(low.includes('komisyon')||low.includes('gelir')){
+      reply = `Komisyon modeliniz <strong>%20</strong>. Bu ay toplam ciro <strong>₺1.284.500</strong>, platform geliri <strong>₺256.900</strong>. Uzman başına ortalama komisyon geliri: <strong>₺2.007</strong>. En yüksek komisyon: <strong>Prof. Dr. Ali Vural</strong> (₺14.250).`;
+    } else if(low.includes('uzman')||low.includes('performans')){
+      reply = `Toplam <strong>${STATE.experts.length}</strong> uzman aktif. En yüksek puan: <strong>Prof. Dr. Ali Vural</strong> (4.96), <strong>Dr. Kerem Öz</strong> (4.95). En yüksek ciro: <strong>Ayşe Yılmaz</strong> (₺30.000).`;
+    } else if(low.includes('whatsapp')||low.includes('satış')){
+      reply = `WhatsApp kanalından bu ay <strong>₺184.500</strong> satış geldi. Dönüşüm oranı <strong>%38,2</strong> ile tüm kanalların üstünde. Otomatik hatırlatma akışı aktif.`;
+    } else {
+      reply = `Platform genel durumu: <strong>128 uzman</strong>, <strong>2.847 müşteri</strong>, <strong>641 aktif randevu</strong>. Memnuniyet %92. Size spesifik bir konuda yardımcı olabilmem için kategori, komisyon, uzman veya WhatsApp hakkında soru sorabilirsiniz.`;
+    }
+    ans.innerHTML = `<div class="ai-box ai-msg"><div class="hd">🤖 AI Asistan</div><div class="bd">${reply}<br><br><span style="font-size:11px;color:#6b7280">⚠️ Bu bilgi yatırım/hukuk/sağlık danışmanlığı değildir.</span></div></div>`;
+  }, 700);
+}
+
+/* ========== TOAST ========== */
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ========== SCORE RING ANIMATION ========== */
+function animateRing(target){
+  const c = document.getElementById('ringFg');
+  const n = document.getElementById('ringNum');
+  const circ = 2*Math.PI*75;
+  c.style.strokeDashoffset = circ;
+  setTimeout(()=>{ c.style.strokeDashoffset = circ*(1-target/100); }, 200);
+  let cur=0;
+  const step=target/60;
+  const iv=setInterval(()=>{
+    cur+=step;
+    if(cur>=target){cur=target;clearInterval(iv);}
+    n.textContent=Math.round(cur);
+  },22);
+}
+
+/* ========== CHARTS ========== */
+function initCharts(){
+  const c1 = document.getElementById('chartCiro');
+  if(c1) new Chart(c1,{
+    type:'bar',
+    data:{
+      labels:['Nis','May','Haz','Tem','Ağu','Eyl'],
+      datasets:[
+        {label:'Ciro (₺)', data:[780000,920000,1010000,1140000,1210000,1284500], backgroundColor:'#0a1628', borderRadius:6},
+        {label:'Komisyon (₺)', data:[156000,184000,202000,228000,242000,256900], backgroundColor:'#d4a843', borderRadius:6}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{ticks:{callback:v=>'₺'+(v/1000).toFixed(0)+'K'}}}}
+  });
+  const c2 = document.getElementById('chartCat');
+  if(c2) new Chart(c2,{
+    type:'doughnut',
+    data:{
+      labels:['Finans','Kariyer','Dijital','Sağlık','Hukuk','İşletme'],
+      datasets:[{data:[38,17,15,12,10,8],backgroundColor:['#0a1628','#d4a843','#3b82f6','#10b981','#ef4444','#8b5cf6'],borderWidth:2,borderColor:'#fff'}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}
+  });
+}
+
+/* ========== INIT ========== */
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCategories();
+  renderExperts();
+  renderMarket();
+  renderPackages();
+  renderAppts();
+  renderCustomers();
+  renderCRM();
+  renderPayments();
+  renderPayouts();
+  renderDocs();
+  renderAudit();
+  animateRing(87);
+  setTimeout(initCharts,400);
+  setTimeout(()=>toast('👋 Hoş geldiniz, CFO. Orhan Boyraz'),700);
+
+  // i18n placeholder
+  document.getElementById('waMsg').addEventListener('focus',()=>{
+    if(!document.getElementById('waMsg').value){
+      document.getElementById('waMsg').value = 'Merhaba, MarkoPaşa üzerinden danışmanlık hizmetleri hakkında bilgi almak istiyorum.';
+    }
+  });
+});
+</script>
+</body>
+</html>
